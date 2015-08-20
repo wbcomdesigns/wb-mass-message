@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Mass Messaging for Buddypress
+Plugin Name: Wb Mass Message
 Plugin URI: http://www.wbcomdesigns.com
 Version: 1.0.0
 Author: Wbcom Designs

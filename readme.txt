@@ -1,4 +1,4 @@
-=== Wb Mass Messaging ===
+=== Wb Mass Message ===
 Contributors: wbcomdesigns , vapvarun
 Tags: mass, messaging, wbcom, vapvarun, buddypress
 Requires at least: 3.0.0
@@ -9,7 +9,8 @@ Ever wanted to send a message to many people at once? Now you can, introducing -
 
 == Description ==
 
-This plugin is for BuddyPress, it adds a dashboard menu and a tab in the messages section. Once you navigate into the messages section and click the "Mass Messaging" tab you have access to all the options which you chose in the dashboard.
+This plugin is for BuddyPress, it adds a dashboard menu and a tab in the messages section. 
+We also facilitate log for admin for mass messages.
 
 Including mass messaging to:
 
@@ -19,7 +20,7 @@ Including mass messaging to:
 
 And:
 
-* Select all buttons to allow mass messaging to all members easily.
+* Select all buttons to allow mass messages to all members easily.
 
 In this page you also see 'subject' and 'description' just like on the Buddypress compose page.
 
