@@ -8,7 +8,6 @@ Author URI: http://www.wbcomdesigns.com
 Description: Ever wanted to send a message to many people at once? Now you can, introducing - Mass Messaging.
 Tested up to: 4.2.4
 */
-
 /* Only load code that needs BuddyPress to run once BP is loaded and initialized. */
 
 defined( 'ABSPATH' ) or die( 'Plugin file cannot be accessed directly.' );

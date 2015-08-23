@@ -20,40 +20,40 @@ if(!class_exists("WbMassMessagingAdmin")){
 				if ( isset( $_POST['MassMessage_nonce_field'] ) || wp_verify_nonce( $_POST['MassMessage_nonce_field'], 'MassMessage_action' ) ) {
 					do_action('wb_mass_message_for_buddypress_before_update_settings');
 					if(isset($_POST['wb_MassMessageGroups'])){
-               			update_site_option('MassMessageGroups',$_POST['wb_MassMessageGroups']);
+               			update_site_option('MassMessageGroups', sanitize_text_field($_POST['wb_MassMessageGroups']));
                 	}  
                		if(isset($_POST['wb_MassMessageAllGroups'])){
-               			update_site_option('MassMessageAllGroups',$_POST['wb_MassMessageAllGroups']);
+               			update_site_option('MassMessageAllGroups', sanitize_text_field($_POST['wb_MassMessageAllGroups']));
                 	}  
                 	if(isset($_POST['wb_MassMessageAllGroupsOverride'])){
-               			update_site_option('MassMessageAllGroupsOverride',$_POST['wb_MassMessageAllGroupsOverride']);
+               			update_site_option('MassMessageAllGroupsOverride', sanitize_text_field($_POST['wb_MassMessageAllGroupsOverride']));
                 	}else{
                 		update_site_option('MassMessageAllGroupsOverride','false');
                 	}
                 	if(isset($_POST['wb_MassMessageMembers'])){
-                    		update_site_option('MassMessageMembers',$_POST['wb_MassMessageMembers']);
+                    		update_site_option('MassMessageMembers', sanitize_text_field($_POST['wb_MassMessageMembers']));
                 	}   
                 	if(isset($_POST['wb_MassMessageAllMembers'])){
-                    		update_site_option('MassMessageAllMembers',$_POST['wb_MassMessageAllMembers']);
+                    		update_site_option('MassMessageAllMembers', sanitize_text_field($_POST['wb_MassMessageAllMembers']));
                 	}
                 	if(isset($_POST['wb_MassMessageAllMembersOverride'])){
-               			update_site_option('MassMessageAllMembersOverride',$_POST['wb_MassMessageAllMembersOverride']);
+               			update_site_option('MassMessageAllMembersOverride', sanitize_text_field($_POST['wb_MassMessageAllMembersOverride']));
                 	}else{
                 		update_site_option('MassMessageAllMembersOverride','false');
                 	}
                 	if(isset($_POST['wb_MassMessageBlogs'])){
-                    		update_site_option('MassMessageBlogs',$_POST['wb_MassMessageBlogs']);
+                    		update_site_option('MassMessageBlogs', sanitize_text_field($_POST['wb_MassMessageBlogs']));
                 	}   
                 	if(isset($_POST['wb_MassMessageAllBlogs'])){
-                    		update_site_option('MassMessageAllBlogs',$_POST['wb_MassMessageAllBlogs']);
+                    		update_site_option('MassMessageAllBlogs', sanitize_text_field($_POST['wb_MassMessageAllBlogs']));
                 	}
                 	if(isset($_POST['wb_MassMessageAllBlogsOverride'])){
-               			update_site_option('MassMessageAllBlogsOverride',$_POST['wb_MassMessageAllBlogsOverride']);
+               			update_site_option('MassMessageAllBlogsOverride', sanitize_text_field($_POST['wb_MassMessageAllBlogsOverride']));
                 	}else{
                 		update_site_option('MassMessageAllBlogsOverride','false');
                 	}
 					if(isset($_POST['wb_MassMessageMinimumType'])){
-                    	update_site_option('MassMessageMinimumType',$_POST['wb_MassMessageMinimumType']);
+                    	update_site_option('MassMessageMinimumType', sanitize_text_field($_POST['wb_MassMessageMinimumType']));
                 	}
                 	do_action('wb_mass_message_for_buddypress_after_update_settings');
                 	?>

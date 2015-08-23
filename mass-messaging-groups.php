@@ -65,10 +65,10 @@ if(!class_exists("WbMassMessagingGroups")){
     			do_action('mass_messaging_for_buddypress_before_post_settings');    			
     			$users = array();
     			
-    			$subject = $_POST['subject'];
-    			$content = $_POST['content'];
+    			$subject = sanitize_text_field($_POST['subject']);
+    			$content = sanitize_text_field($_POST['content']);
     			
-				$thread = $_POST['thread'];
+				$thread = sanitize_text_field($_POST['thread']);
 				$threaded = false;
 				if(!empty($thread)){
 					if($thread == 1){
