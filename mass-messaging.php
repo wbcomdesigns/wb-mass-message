@@ -208,7 +208,7 @@ if(!class_exists("StormationMassMessagingPlugin")){
 						<form method="post" action="<?php echo $_SERVER["REQUEST_URI"]; ?>"><td><p class="submit"><input type="submit" name="reset_MassMessagingOptions" id="submit" class="button-secondary" value="Reset to defaults"  /></p></td></form></tr>
 						</table>
 						</form></div>
-						Still struggling? You can view the official help <a href="http://www.stormation.info/portfolio-item/mass-messaging-in-buddypress/">here...</a>
+						Still struggling? You can view the official help <a href="https://wbcomdesigns.com/plugins/">here...</a>
                 			<?php
 				}
 			}
