@@ -1,10 +1,10 @@
 <?php
 /*
 Plugin Name: Wb Mass Message
-Plugin URI: http://www.wbcomdesigns.com
+Plugin URI: https://wbcomdesigns.com/plugins/
 Version: 1.0.0
 Author: Wbcom Designs
-Author URI: http://www.wbcomdesigns.com
+Author URI: https://wbcomdesigns.com
 Description: Ever wanted to send a message to many people at once? Now you can, introducing - Mass Messaging.
 Tested up to: 4.2.4
 */
