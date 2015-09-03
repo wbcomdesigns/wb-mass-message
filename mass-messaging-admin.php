@@ -7,7 +7,7 @@ if(!class_exists("WbMassMessagingAdmin")){
 		}
 		public function addAdminMenus(){
 			if(!$this->menuExists('Wb_mass_message')){
-				add_menu_page(__('Wb Mass Message', WBCOM_MASS_MESSAGE_TEXT_DOMIAN), __('Wb Mass Message', WBCOM_MASS_MESSAGE_TEXT_DOMIAN), 'manage_options', 'Wb_mass_message', array($this,displayWbOptionsPage), 'dashicons-email-alt');
+				add_menu_page(__('Wb Mass Message', WBCOM_MASS_MESSAGE_TEXT_DOMIAN), __('Wb Mass Message', WBCOM_MASS_MESSAGE_TEXT_DOMIAN), 'manage_options', 'Wb_mass_message', array($this, 'displayWbOptionsPage'), 'dashicons-email-alt');
 			}
 			add_submenu_page('Wb_mass_message', __('Mass Messages Log', WBCOM_MASS_MESSAGE_TEXT_DOMIAN), __('Mass Messages Log', WBCOM_MASS_MESSAGE_TEXT_DOMIAN), 'manage_options', 'MassMessagesLog', array($this,'displayAdminMessagesLog'));
 		}
@@ -41,19 +41,15 @@ if(!class_exists("WbMassMessagingAdmin")){
                 	}else{
                 		update_site_option('MassMessageAllMembersOverride','false');
                 	}
-                	if(isset($_POST['wb_MassMessageBlogs'])){
-                    		update_site_option('MassMessageBlogs', sanitize_text_field($_POST['wb_MassMessageBlogs']));
-                	}   
-                	if(isset($_POST['wb_MassMessageAllBlogs'])){
-                    		update_site_option('MassMessageAllBlogs', sanitize_text_field($_POST['wb_MassMessageAllBlogs']));
-                	}
-                	if(isset($_POST['wb_MassMessageAllBlogsOverride'])){
-               			update_site_option('MassMessageAllBlogsOverride', sanitize_text_field($_POST['wb_MassMessageAllBlogsOverride']));
-                	}else{
-                		update_site_option('MassMessageAllBlogsOverride','false');
-                	}
+                	
 					if(isset($_POST['wb_MassMessageMinimumType'])){
                     	update_site_option('MassMessageMinimumType', sanitize_text_field($_POST['wb_MassMessageMinimumType']));
+                	}
+					if(isset($_POST['wb_MassMessageSendType'])){
+                    	update_site_option('MassMessageSendType', sanitize_text_field($_POST['wb_MassMessageSendType']));
+                	}
+					if(isset($_POST['wb_MassMessageGroupRole'])){
+                    	update_site_option('MassMessageGroupRole', sanitize_text_field($_POST['wb_MassMessageGroupRole']));
                 	}
                 	do_action('wb_mass_message_for_buddypress_after_update_settings');
                 	?>
@@ -68,10 +64,9 @@ if(!class_exists("WbMassMessagingAdmin")){
 						update_site_option('MassMessageMembers', 'true');
 						update_site_option('MassMessageAllMembers', 'true');
 						update_site_option('MassMessageAllMembersOverride', 'true');
-						update_site_option('MassMessageBlogs', 'true');
-						update_site_option('MassMessageAllBlogs', 'true');
-						update_site_option('MassMessageAllBlogsOverride', 'true');
 						update_site_option('MassMessageMinimumType', 'administrator');
+						update_site_option('MassMessageSendType', 'all');
+						update_site_option('MassMessageGroupRole', 'false');
 						do_action('wb_mass_message_for_buddypress_after_reset_settings');
 						?>
 						<div class="updated"><p><strong><?php echo __("Options Reset", WBCOM_MASS_MESSAGE_TEXT_DOMIAN)?></strong></p></div>
@@ -83,10 +78,9 @@ if(!class_exists("WbMassMessagingAdmin")){
 					$oldMassMessageMembers = get_site_option('MassMessageMembers');
 					$oldMassMessageAllMembers = get_site_option('MassMessageAllMembers');
 					$oldMassMessageAllMembersOverride = get_site_option('MassMessageAllMembersOverride');
-					$oldMassMessageBlogs = get_site_option('MassMessageBlogs');
-					$oldMassMessageAllBlogs = get_site_option('MassMessageAllBlogs');
-					$oldMassMessageAllBlogsOverride = get_site_option('MassMessageAllBlogsOverride');
 					$oldMassMessageMinimumType = get_site_option('MassMessageMinimumType');
+					$oldMassMessageSendType = get_site_option('MassMessageSendType');
+					$oldMassMessageGroupRole = get_site_option('MassMessageGroupRole');
 					?>
 					<form method="post" action="<?php echo $_SERVER["REQUEST_URI"]; ?>">
                     <?php wp_nonce_field( 'MassMessage_action', 'MassMessage_nonce_field' );?>
@@ -144,42 +138,43 @@ if(!class_exists("WbMassMessagingAdmin")){
 						</td>
 						</tr>
 						<tr>
-						<th scope="row"><?php echo __("Allow mass messaging to blogs (requires Multisite)?", WBCOM_MASS_MESSAGE_TEXT_DOMIAN)?></th>
-						<td>
-							<fieldset>
-							<label title='Yes'><input type='radio' name='wb_MassMessageBlogs' value='true' <?php if($oldMassMessageBlogs == 'true'){echo "checked";} ?> /> <span><?php echo __("Yes", WBCOM_MASS_MESSAGE_TEXT_DOMIAN)?></span></label>
-							<label title='No'><input type='radio' name='wb_MassMessageBlogs' value='false' <?php if($oldMassMessageBlogs == 'false'){echo "checked";} ?> /> <span><?php echo __("No", WBCOM_MASS_MESSAGE_TEXT_DOMIAN)?></span></label>
-							</fieldset>
-						</td>
-						</tr>
-						<tr>
-						<th scope="row"><?php echo __("Allow mass messaging to select all blogs (requires Multisite)?", WBCOM_MASS_MESSAGE_TEXT_DOMIAN)?></th>
-						<td>
-							<fieldset>
-							<label title='Yes'><input type='radio' name='wb_MassMessageAllBlogs' value='true' <?php if($oldMassMessageAllBlogs == 'true'){echo "checked";} ?> /> <span><?php echo __("Yes", WBCOM_MASS_MESSAGE_TEXT_DOMIAN)?></span></label>
-							<label title='No'><input type='radio' name='wb_MassMessageAllBlogs' value='false' <?php if($oldMassMessageAllBlogs == 'false'){echo "checked";} ?> /> <span><?php echo __("No", WBCOM_MASS_MESSAGE_TEXT_DOMIAN)?></span></label>
-							</fieldset>
-						</td>
-						</tr>
-						<tr>
-						<th scope="row"><?php echo __("Show ALL blogs, not just those with membership?", WBCOM_MASS_MESSAGE_TEXT_DOMIAN)?></th>
-						<td>
-							<fieldset>
-							<label for='wb_MassMessageAllBlogsOverride'><input type='Checkbox' name='wb_MassMessageAllBlogsOverride' id='wb_MassMessageAllBlogsOverride' value='true' <?php if($oldMassMessageAllBlogsOverride == 'true'){echo "checked";} ?> /> <?php echo __("Yes", WBCOM_MASS_MESSAGE_TEXT_DOMIAN)?></label>
-							</fieldset>
-						</td>
-						</tr>
-						<tr>
 						<th scope="row"><label for="wb_MassMessageMinimumType"><?php echo __("Minimum role for usage", WBCOM_MASS_MESSAGE_TEXT_DOMIAN)?></label></th>
 						<td><select name="wb_MassMessageMinimumType" id="wb_MassMessageMinimumType">
 							<?php
-							$items = array('Super Admin' => 'super admin', 'Administrator' => 'administrator', 'Editor' => 'editor', 'Author' => 'author', 'Contributor' => 'contributor', 'Subscriber' => 'subscriber');
-							foreach($items as $item=>$value){
+							 global $wp_roles;
+     						$roles = $wp_roles->get_names();
+							$items = array( 'super admin' => 'Super Admin',  'administrator' =>'Administrator',  'editor' =>'Editor', 'author' => 'Author', 'contributor' => 'Contributor', 'subscriber' => 'Subscriber');
+							$roles=array_merge($items,$roles);
+							foreach($roles as $value=>$item){
 								$selected = ($oldMassMessageMinimumType == $value ) ? 'selected="selected"' : '';
 								echo "<option value='$value' $selected>$item</option>";
 							}
 							?>
 						</select></td>
+						</tr>
+						<tr>
+						<th scope="row"><label for="wb_MassMessageMinimumType"><?php echo __("User Role to whom message to be send", WBCOM_MASS_MESSAGE_TEXT_DOMIAN)?></label></th>
+						<td><select name="wb_MassMessageSendType" id="wb_MassMessageSendType">
+							<?php
+							 global $wp_roles;
+     						$roles = $wp_roles->get_names();
+							$items = array( 'all' => 'All', 'super admin' => 'Super Admin', 'administrator' =>'Administrator',  'editor' =>'Editor', 'author' => 'Author', 'contributor' => 'Contributor', 'subscriber' => 'Subscriber');
+							$roles=array_merge($items,$roles);
+							foreach($roles as $value=>$item){
+								$selected = ($oldMassMessageSendType == $value ) ? 'selected="selected"' : '';
+								echo "<option value='$value' $selected>$item</option>";
+							}
+							?>
+						</select></td>
+						</tr>                        
+						<tr>
+						<th scope="row"><?php echo __("Want to apply the Role based message sending to group?", WBCOM_MASS_MESSAGE_TEXT_DOMIAN)?></th>
+						<td>
+							<fieldset>
+							<label title='Yes'><input type='radio' name='wb_MassMessageGroupRole' value='true' <?php if($oldMassMessageGroupRole == 'true'){echo "checked";} ?> /> <span><?php echo __("Yes", WBCOM_MASS_MESSAGE_TEXT_DOMIAN)?></span></label>
+							<label title='No'><input type='radio' name='wb_MassMessageGroupRole' value='false' <?php if($oldMassMessageGroupRole == 'false'){echo "checked";} ?> /> <span><?php echo __("No", WBCOM_MASS_MESSAGE_TEXT_DOMIAN)?></span></label>
+							</fieldset>
+						</td>
 						</tr>
 						</table>
 						<table><tr><td><p class="submit"><input type="submit" name="wb_MassMessageOptions" id="submit" class="button-primary" value="Save Changes"  /></p></td>
