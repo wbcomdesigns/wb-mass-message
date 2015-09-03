@@ -4,10 +4,9 @@ if(!class_exists("WbMassMessagingGroups")){
 		public function __construct()
 		{
 			define('MassMessageGroupsOverrideShowOnlyPublic', 'false');
-			define('MassMessageBlogsOverrideShowOnlyPublic', 'true');
 			add_action('wp_head', array($this, 'addHeaderCode'), 1);
 			add_action('bp_setup_nav', array($this, 'setupNavigation'), 1);
-			add_action('admin_bar_menu', array($this,'setupGrpToolbar'), 999 );
+			add_action('admin_bar_menu', array($this,'setupGrpToolbar'), 900 );
 		}
 		
 		function addHeaderCode(){
@@ -35,6 +34,8 @@ if(!class_exists("WbMassMessagingGroups")){
 			$MassMessageGroups = get_site_option('MassMessageGroups');
 			$MassMessageAllGroups = get_site_option('MassMessageAllGroups');
 			$MassMessageAllGroupsOverride = get_site_option('MassMessageAllGroupsOverride');
+			$MassMessageSendType = get_site_option('MassMessageSendType');
+			$MassMessageGroupRole = get_site_option('MassMessageGroupRole');
 			do_action('mass_messaging_grp_buddypress_before_user_can_view');
 			if(current_user_can($role) && $MassMessageGroups=="true"){
 				bp_core_new_subnav_item( array(
@@ -65,10 +66,9 @@ if(!class_exists("WbMassMessagingGroups")){
     			do_action('mass_messaging_for_buddypress_before_post_settings');    			
     			$users = array();
     			
-    			$subject = sanitize_text_field($_POST['subject']);
-    			$content = sanitize_text_field($_POST['content']);
-    			
-				$thread = sanitize_text_field($_POST['thread']);
+    			$subject = htmlspecialchars(isset($_POST['subject'])?sanitize_text_field($_POST['subject']):"");
+    			$content = htmlspecialchars(isset($_POST['content'])?sanitize_text_field($_POST['content']):"");
+				$thread = isset($_POST['thread'])?sanitize_text_field($_POST['thread']):"";
 				$threaded = false;
 				if(!empty($thread)){
 					if($thread == 1){
@@ -78,11 +78,13 @@ if(!class_exists("WbMassMessagingGroups")){
 				do_action('mass_messaging_for_buddypress_after_post_settings');
 				
 				do_action('mass_messaging_for_buddypress_before_blogs_actions');
-				$blogs = $_POST['blogs'];
+				$blogs = isset($_POST['thread'])?$_POST['blogs']:"";
+				$MassMessageSendType = get_site_option('MassMessageSendType');
+				$MassMessageGroupRole = get_site_option('MassMessageGroupRole');
     			if(!empty($blogs)){
     				$blogsCount = count($blogs);
     				for($i=0; $i < $blogsCount; $i++){
-    					$blogMembers = get_users('blog_id='.$blogs[$i]);
+    					$blogMembers = ($MassMessageSendType=="all")?get_users('blog_id='.$blogs[$i]):get_users('blog_id='.$blogs[$i].'&role='.$MassMessageSendType);
 						foreach($blogMembers as $blogMember){
 							array_push($users, $blogMember->ID);
 						}
@@ -91,12 +93,20 @@ if(!class_exists("WbMassMessagingGroups")){
     			do_action('mass_messaging_for_buddypress_after_blogs_actions');
     			
     			do_action('mass_messaging_for_buddypress_before_groups_actions');
-    			$groups = $_POST['groups'];
+    			$groups = isset($_POST['thread'])?$_POST['groups']:"";
   				if(!empty($groups)){
     				$groupCount = count($groups);
     				for($i=0; $i < $groupCount; $i++){
 						if(is_numeric($groups[$i])){
+							if($MassMessageGroupRole == 'true')
+							{
+								$groupMembers = $wpdb->get_col("SELECT grp.user_id FROM {$bp->groups->table_name_members} AS grp LEFT JOIN ".$wpdb->usermeta." AS usermeta ON grp.user_id=usermeta.user_id WHERE grp.group_id = ".$groups[$i]." AND grp.is_confirmed = 1 AND grp.is_banned = 0 AND usermeta.meta_key = '".$wpdb->prefix . "capabilities' AND usermeta.meta_value LIKE '%".$MassMessageSendType."%'");
+							}
+							else
+							{
     						$groupMembers = $wpdb->get_col("SELECT user_id FROM {$bp->groups->table_name_members} WHERE group_id = ".$groups[$i]." AND is_confirmed = 1 AND is_banned = 0");
+							}
+							
 						}
   						$groupMembersCount = count($groupMembers);
     					for($i=0; $i < $groupMembersCount; $i++){
@@ -172,6 +182,7 @@ if(!class_exists("WbMassMessagingGroups")){
 				$MassMessageAllBlogs = get_site_option('MassMessageAllBlogs');
 				$MassMessageAllBlogsOverride = get_site_option('MassMessageAllBlogsOverride');
 				$MassMessageMinimumType = get_site_option('MassMessageMinimumType');
+				$MassMessageSendType = get_site_option('MassMessageSendType');
     			?>
     			<form action="" method="post" id="send_message_form" class="standard-form">
 				
@@ -181,55 +192,16 @@ if(!class_exists("WbMassMessagingGroups")){
 				<label for="content" class="content"><?php echo __("Message", WBCOM_MASS_MESSAGE_TEXT_DOMIAN)?></label>
 				<textarea name="content" id="message_content" rows="15" cols="50"></textarea>
 				
-				<?php if($MassMessageAllBlogs == 'true'){ ?>
-				
-				<h3 style="width:100%;"><?php echo __("All Blogs", WBCOM_MASS_MESSAGE_TEXT_DOMIAN)?></h3>
-				<input type=checkbox style="width:12px;" onClick="toggle(this, 'blogs[]')" >All Blogs<br />
-				
-				<?php } ?>
-				<?php if($MassMessageBlogs == 'true'){ ?>
-				
-					<h3 style="width:100%;"><?php echo __("Blogs", WBCOM_MASS_MESSAGE_TEXT_DOMIAN)?></h3>
-				
-					<?php if($MassMessageAllBlogsOverride == 'true'){ 
-			
-						if(MassMessageBlogsOverrideShowOnlyPublic == 'true'){
-						
-							$blogsAll = $wpdb->get_results("SELECT * FROM {$wpdb->blogs} AND spam = '0' AND deleted = '0' AND archived = '0' AND public='1'");
-							
-						}else{
-							$blogsAll = $wpdb->get_results("SELECT * FROM {$wpdb->blogs} AND spam = '0' AND deleted = '0' AND archived = '0'");
-						}
-						foreach ( $blogsAll as $blogAll) {
-							?>
-							<input type=checkbox style="width:12px;" name="blogs[]" value="<?php echo $blogAll->id; ?>"><?php echo $blogAll->name; ?>
-							<br />
-							<?php
-						}
-				
-					}else{
-					
-						if ( bp_has_blogs( 'user_id='.$user_id ) ) : ?>
-							<?php while ( bp_blogs() ) : bp_the_blog(); ?>
-								<input type=checkbox style="width:12px;" name="blogs[]" value="<?php echo $blogs_template->blog->blog_id; ?>"><?php bp_blog_name(); ?>
-								<br />
-							<?php endwhile; ?>
-						<?php endif; ?>
-					
-					<?php } ?>
-				
-				<?php } ?>
-				
 				<?php if($MassMessageAllGroups == 'true'){ ?>
 				
 				<h3 style="width:100%;"><?php echo __("All Groups", WBCOM_MASS_MESSAGE_TEXT_DOMIAN)?></h3>
-				<input type=checkbox style="width:12px;" onClick="toggle(this, 'groups[]')" >All Groups<br />
+				<label><input type=checkbox style="width:12px;" onClick="toggle(this, 'groups[]')" >All Groups</label><br />
 				
 				<?php } ?>
 				<?php if($MassMessageGroups == 'true'){ ?>
 				
 					<h3 style="width:100%;"><?php echo __("Groups", WBCOM_MASS_MESSAGE_TEXT_DOMIAN)?></h3><br>
-				
+					 <div class="wb-mass-member-list" style="max-height:300px; overflow-y:auto;">
 					<?php if($MassMessageAllGroupsOverride == 'true'){ 
 					
 						if(MassMessageGroupsOverrideShowOnlyPublic == 'true'){
@@ -244,8 +216,7 @@ if(!class_exists("WbMassMessagingGroups")){
 						
 						foreach ( $groupsAll as $groupAll) {
 							?>
-							<input type=checkbox style="width:12px;" name="groups[]" value="<?php echo $groupAll->id; ?>"><?php echo $groupAll->name; ?>
-							<br />
+							<label style="width:50%; float:left; padding:1%;margin:0px;"><input type=checkbox style="width:12px;" name="groups[]" value="<?php echo $groupAll->id; ?>"><?php echo $groupAll->name; ?></label>
 							<?php
 						}
 				
@@ -260,9 +231,11 @@ if(!class_exists("WbMassMessagingGroups")){
 					<?php endif; ?>
 				
 					<?php } ?>
+                    </div>
+                    <div style="clear:both;"></div>
 				<?php } ?>
 				<br />
-				<input type=checkbox style="width:12px;" name="thread" class="thread" value="1"><?php echo __("Send as 1 message?", WBCOM_MASS_MESSAGE_TEXT_DOMIAN)?><br />
+				<label><input type=checkbox style="width:12px;" name="thread" class="thread" value="1"><?php echo __("Send as 1 message?", WBCOM_MASS_MESSAGE_TEXT_DOMIAN)?><br /></label>
 				<input type="submit" value="Send Message &rarr;" name="send" id="send" />
 				</form>
         	<?php
@@ -274,6 +247,7 @@ if(!class_exists("WbMassMessagingGroups")){
 			
 			$glink = trailingslashit( $user_domain . $bp->groups->slug );
 			$wp_admin_nav_gp = array(
+				'id'	 => 'my-account-group-mass-messages',
 				'parent' => 'my-account-' . $bp->groups->id,
 				'title'  => __('Mass Messages', WBCOM_MASS_MESSAGE_TEXT_DOMIAN),
 				'href'   => trailingslashit($glink . 'mass-messages')
