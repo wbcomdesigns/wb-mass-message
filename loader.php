@@ -1,8 +1,8 @@
 <?php
 /*
-Plugin Name: Wb Mass Message
+Plugin Name: WB Mass Message
 Plugin URI: https://wbcomdesigns.com/plugins/
-Version: 1.0.0
+Version: 1.0.1
 Author: Wbcom Designs
 Author URI: https://wbcomdesigns.com
 Description: Ever wanted to send a message to many people at once? Now you can, introducing - Mass Messaging.
@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) or die( 'Plugin file cannot be accessed directly.' );
 	
 	if ( !defined( '' ) ) {
 	
-		define( 'WBCOM_MASS_MESSAGE' , '1.0' );
+		define( 'WBCOM_MASS_MESSAGE' , '1.0.1' );
 	}
 	
 	if ( !defined( 'WBCOM_MASS_MESSAGE_PATH' ) ) {
@@ -39,8 +39,9 @@ defined( 'ABSPATH' ) or die( 'Plugin file cannot be accessed directly.' );
 	
 function wb_mass_messaging_init_loader() {
     require( WBCOM_MASS_MESSAGE_PATH . '/mass-messaging-admin.php' );
-    require( WBCOM_MASS_MESSAGE_PATH . '/mass-messaging-member.php' );
+	if ( bp_is_active( 'groups' ) )
     require( WBCOM_MASS_MESSAGE_PATH . '/mass-messaging-groups.php' );
+    require( WBCOM_MASS_MESSAGE_PATH . '/mass-messaging-member.php' );
 }
 add_action( 'bp_include', 'wb_mass_messaging_init_loader' );
 
@@ -70,7 +71,31 @@ if( !function_exists( 'wbcom_mass_message_install' ) )
 			}
 		}
 	}
-	register_activation_hook( __FILE__, 'wbcom_mass_message_install' );
+	function wb_mass_message_require_check()
+	{
+		if(!function_exists( 'bp_is_active' ))
+			{
+				require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+	
+				add_action( 'admin_notices',  'wb_mass_message_require_notice' );
+	
+				deactivate_plugins( plugin_basename( __FILE__ ) );
+			}
+			else
+			wbcom_mass_message_install();
+	}
+	
+	add_action( 'admin_init',  'wb_mass_message_require_check' );
+		
+	function wb_mass_message_require_notice() {
+		
+			echo '<div id="message" class="fade error"><p style="line-height: 150%">';
+	
+			echo '<strong>Buddypress</strong> plugin is not activated please activate it first.';
+	
+			echo '</p></div>';
+	
+	}
 
 /* If you have code that does not need BuddyPress to run, then add it here. */
 ?>
