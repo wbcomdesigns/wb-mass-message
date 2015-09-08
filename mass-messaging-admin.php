@@ -17,7 +17,7 @@ if(!class_exists("WbMassMessagingAdmin")){
     			}else{	
     				echo "<div class=\"wrap\">";
 					echo "<h2>".__("Mass Messaging Options", WBCOM_MASS_MESSAGE_TEXT_DOMIAN)."</h2>";
-				if ( isset( $_POST['MassMessage_nonce_field'] ) || wp_verify_nonce( $_POST['MassMessage_nonce_field'], 'MassMessage_action' ) ) {
+				if ( isset( $_POST['MassMessage_nonce_field'] ) && wp_verify_nonce( $_POST['MassMessage_nonce_field'], 'MassMessage_action' ) ) {
 					do_action('wb_mass_message_for_buddypress_before_update_settings');
 					if(isset($_POST['wb_MassMessageGroups'])){
                			update_site_option('MassMessageGroups', sanitize_text_field($_POST['wb_MassMessageGroups']));
@@ -181,7 +181,7 @@ if(!class_exists("WbMassMessagingAdmin")){
 						<form method="post" action="<?php echo $_SERVER["REQUEST_URI"]; ?>"><td><p class="submit"><input type="submit" name="reset_MassMessageOptions" id="submit" class="button-secondary" value="Reset to defaults"  /></p></td></form></tr>
 						</table>
 						</form></div>
-						<?php echo __("Still struggling? You can view the official help", WBCOM_MASS_MESSAGE_TEXT_DOMIAN)?> <a href="http://www.stormation.info/portfolio-item/mass-messaging-in-buddypress/"><?php echo __("here...", WBCOM_MASS_MESSAGE_TEXT_DOMIAN)?></a>
+						<?php echo __("Still struggling? You can view the official help", WBCOM_MASS_MESSAGE_TEXT_DOMIAN)?> <a href="https://wbcomdesigns.com/plugins/wb-mass-message/"><?php echo __("here...", WBCOM_MASS_MESSAGE_TEXT_DOMIAN)?></a>
                 			<?php
 				}
 			}
