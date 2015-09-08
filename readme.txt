@@ -23,7 +23,7 @@ And:
 * Select all buttons to allow mass messages to all members easily.
 
 In this page you also see 'subject' and 'description' just like on the Buddypress compose page.
-If you need additional help you can contact us for [Custom Development](https://wbcomdesigns.com/hire-us/).
+If you need additional help you can contact us for [Custom Development](https://wbcomdesigns.com/plugins/wb-mass-message/).
 
 == Installation ==
 
