@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WB Mass Message
-Plugin URI: https://wbcomdesigns.com/plugins/
+Plugin URI: https://wbcomdesigns.com/plugins/wb-mass-message/
 Version: 1.0.1
 Author: Wbcom Designs
 Author URI: https://wbcomdesigns.com
