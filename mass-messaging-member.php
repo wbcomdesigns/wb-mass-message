@@ -11,7 +11,6 @@ if(!class_exists("WbMassMessagingMember")){
 		function addHeaderCode(){
 			global $bp;
 			?>
-			<!-- Using Stormation's 'Mass Messaging' plugin from stormation.info -->
 			<?php
 			if($bp->current_component == 'messages' && $bp->current_action == 'mass-messages'){
 				?>
