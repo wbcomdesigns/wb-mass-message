@@ -1,6 +1,7 @@
 === WB Mass Message ===
 Contributors: wbcomdesigns , vapvarun
 Tags: mass messages, wbcomdesigns, vapvarun, BuddyPress, BuddyPress Messages
+Donate link: https://wbcomdesigns.com/donate/
 Requires at least: 3.0.0
 Tested up to: 4.2.2
 Stable tag: 4.3
