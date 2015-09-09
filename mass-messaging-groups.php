@@ -174,9 +174,9 @@ if(!class_exists("WbMassMessagingGroups")){
 						) 
 					);
 				}
-				$MassMessageGroups = get_site_option('MassMessagingGroups');
-				$MassMessageAllGroups = get_site_option('MassMessagingAllGroups');
-				$MassMessageAllGroupsOverride = get_site_option('MassMessagingAllGroupsOverride');
+				$MassMessageGroups = get_site_option('MassMessageGroups');
+				$MassMessageAllGroups = get_site_option('MassMessageAllGroups');
+				$MassMessageAllGroupsOverride = get_site_option('MassMessageAllGroupsOverride');
 				$MassMessageBlogs = get_site_option('MassMessageBlogs');
 				$MassMessageAllBlogs = get_site_option('MassMessageAllBlogs');
 				$MassMessageAllBlogsOverride = get_site_option('MassMessageAllBlogsOverride');
