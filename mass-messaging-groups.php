@@ -77,7 +77,7 @@ if(!class_exists("WbMassMessagingGroups")){
 				do_action('mass_messaging_for_buddypress_after_post_settings');
 				
 				do_action('mass_messaging_for_buddypress_before_blogs_actions');
-				$blogs = isset($_POST['thread'])?$_POST['blogs']:"";
+				$blogs = isset($_POST['blogs'])?$_POST['blogs']:"";
 				$MassMessageSendType = get_site_option('MassMessageSendType');
 				$MassMessageGroupRole = get_site_option('MassMessageGroupRole');
     			if(!empty($blogs)){
@@ -92,7 +92,7 @@ if(!class_exists("WbMassMessagingGroups")){
     			do_action('mass_messaging_for_buddypress_after_blogs_actions');
     			
     			do_action('mass_messaging_for_buddypress_before_groups_actions');
-    			$groups = isset($_POST['thread'])?$_POST['groups']:"";
+    			$groups = isset($_POST['groups'])?$_POST['groups']:"";
   				if(!empty($groups)){
     				$groupCount = count($groups);
     				for($i=0; $i < $groupCount; $i++){
